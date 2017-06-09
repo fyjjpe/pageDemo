@@ -1,0 +1,115 @@
+body{
+	min-width:900px;
+
+}
+.title{
+	width:100%;
+	color:#008000;
+	font-size:16px;
+	font-weight:bold;
+	border-bottom:1px solid #CCC;
+	height:34px;
+}
+
+#SearchList{
+	min-width:810px;
+}
+
+label{
+	display:inline-block;
+	font-size:15px;
+	line-height:35px;
+	height:35px;
+}
+input{ margin:0px; margin-right:10px;}
+
+
+button{
+	margin-left:30px;
+	width:80px;
+	text-align:center;
+}
+
+.gridtable {
+    font-size:14px;
+    color:#333333;
+    border: 1px;
+    border-color: #999;
+    border-collapse: collapse;
+	margin-left:20px;
+	width:90%;
+
+}
+.gridtable th {
+    border-width: 1px;
+    padding: 4px;
+	height:30px;
+    border-style: solid;
+    border-color: #999;
+	text-align:left;
+    background-color:#FFC;
+}
+.gridtable_th1 {
+	width:150px;
+}
+.gridtable_th2 {
+	width:300px;
+}
+.gridtable_th3 {
+	width:200px;
+	max-width:200px;
+}
+.gridtable_td {
+    border-width: 1px;
+	padding-left:6px;
+	height:20px;
+    border-style: solid;
+    border-color: #999;
+    background-color: #ffffff;
+}
+.label_name{
+	display:inline-block;
+	font-size:15px;
+	line-height:20px;
+	height:20px;
+}
+.operationWord{
+	width:95px;
+	text-align:center;
+}
+#ChannelOrder{
+	width:100%;
+	height:100%;
+	position:fixed;
+	top:0px;
+	left:0px;
+	display:none;
+}
+.niceform{
+	position:fixed;
+	width:50%;
+	height:50%;
+	background-color:#c6f3fe;
+	border:1px solid #999;
+	left:50%;
+	top:50%;
+	margin-left:-25%;
+	margin-top:-15%;
+	padding:5px 15px;
+	
+}
+
+.provinces_title{
+	border-bottom:0px;
+	line-height:34px;
+	color:#000
+}
+
+.nFButton{
+	margin-top:50px;
+}
+.save{
+	margin-left:15%;
+	width:50px;
+}
+

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tpadsz.update.mvc.dao.StoreOrderDao">
+
+    <resultMap type="DStoreOrder" id="standardOrderMap">
+        <id property="id" column="id" javaType="String" jdbcType="VARCHAR"/>
+        <result property="goodsId" column="goods_id" javaType="String" jdbcType="VARCHAR"/>
+        <result property="createDate" column="create_date" javaType="Date" jdbcType="TIMESTAMP"/>
+        <result property="sendDate" column="send_date" javaType="Date" jdbcType="TIMESTAMP"/>
+        <result property="finishDate" column="finish_date" javaType="Date" jdbcType="TIMESTAMP"/>
+        <result property="price" column="price" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="status" column="status" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="name" column="name" javaType="String" jdbcType="VARCHAR"/>
+        <result property="serialno" column="serialno" javaType="String" jdbcType="VARCHAR"/>
+        <result property="uid" column="uid" javaType="String" jdbcType="VARCHAR"/>
+        <result property="fullName" column="full_name" javaType="String" jdbcType="VARCHAR"/>
+        <result property="userPhone" column="user_phone" javaType="String" jdbcType="VARCHAR"/>
+        <result property="mobile" column="mobile" javaType="String" jdbcType="VARCHAR"/>
+        <result property="province" column="province" javaType="String" jdbcType="VARCHAR"/>
+        <result property="city" column="city" javaType="String" jdbcType="VARCHAR"/>
+        <result property="address" column="address" javaType="String" jdbcType="VARCHAR"/>
+        <result property="descr" column="descr" javaType="String" jdbcType="VARCHAR"/>
+        <result property="isDelete" column="is_delete" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="payType" column="pay_type" javaType="String" jdbcType="VARCHAR"/>
+        <result property="expressNum" column="express_num" javaType="String" jdbcType="VARCHAR"/>
+        <result property="logisticsMsg" column="logistics_msg" javaType="String" jdbcType="VARCHAR"/>
+        <result property="goodsNum" column="goods_num" javaType="Integer" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="order_columns">
+        id, goods_id, create_date, send_date, finish_date, price, status, name, serialno, uid,full_name, user_phone,mobile,province,city,address, descr, is_delete, pay_type, express_num, logistics_msg, goods_num
+	</sql>
+
+    <select id="findOrders" resultMap="standardOrderMap">
+        SELECT
+        <include refid="order_columns"/>
+        from f_order_store g where g.is_delete=0 order by g.create_date desc , g.status
+    </select>
+
+    <select id="findOrdersByConditions" parameterType="com.tpadsz.update.mvc.web.vo.SearchOrderParamsVo"
+            resultMap="standardOrderMap">
+        SELECT
+        <include refid="order_columns"/>
+        from f_order_store g
+        <where>
+            g.is_delete=0
+            <if test="beginTime != null ">
+                AND g.create_date &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null ">
+                AND g.create_date &lt;= #{endTime}
+            </if>
+            <if test="name != null ">
+                AND g.name = #{name}
+            </if>
+            <if test="serialno != null ">
+                AND g.serialno = #{serialno}
+            </if>
+            <if test="userPhone != null ">
+                AND g.user_phone = #{userPhone}
+            </if>
+            <if test="status != null ">
+                AND g.status = #{status}
+            </if>
+        </where>
+        order by g.create_date desc,g.status
+    </select>
+
+    <select id="getOrderBySerialno" resultMap="standardOrderMap">
+        SELECT
+        <include refid="order_columns"/>
+        from f_order_store g where g.serialno=#{serialno}
+    </select>
+
+    <update id="updateOrderLogisticsInfo" parameterType="com.tpadsz.update.mvc.model.DStoreOrder">
+        update f_order_store set logistics_msg = #{logisticsMsg},express_num = #{expressNum},
+        status=1, send_date = #{sendDate},finish_date = #{finishDate}
+        where serialno=#{serialno}
+    </update>
+
+    <update id="updateOrderStatus" parameterType="String">
+        update f_order_store set status=0 where serialno=#{serialno}
+    </update>
+
+    <update id="modifyOrderFailure" parameterType="String">
+        update f_order_store set status=3 where serialno=#{serialno}
+    </update>
+
+    <select id="queryList" resultMap="standardOrderMap">
+        SELECT * FROM f_order_store limit #{pageno},#{pagesize}
+    </select>
+
+    <select id="getTotalCount" resultType="int">
+        SELECT count(id) FROM f_order_store;
+    </select>
+
+</mapper>

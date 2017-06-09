@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    <!-- 默认的注解映射的支持 (注入DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter当需要springMvc返回json数据时请注释掉以下配置) -->
+    <mvc:annotation-driven/>
+    <context:component-scan base-package="com.tpadsz.update.mvc.web.controller"/>
+    <mvc:default-servlet-handler/>
+
+    <!-- 视图解释类 -->
+    <bean
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/"/>
+        <property name="suffix" value=".jsp"/><!--可为空,方便实现自已的依据扩展名来选择视图解释类的逻辑 -->
+    </bean>
+
+    <bean
+            class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"></bean>
+    <bean
+            class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="mappingJacksonHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+    <bean id="mappingJacksonHttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/html;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 对静态资源文件的访问 方案一 （二选一） -->
+    <!-- <mvc:default-servlet-handler /> -->
+
+    <!-- 对静态资源文件的访问 方案二 （二选一）
+    <mvc:resources mapping="/images/**" location="/images/"
+        cache-period="31556926" />
+    <mvc:resources mapping="/js/**" location="/js/"
+        cache-period="31556926" />
+    <mvc:resources mapping="/css/**" location="/css/"
+        cache-period="31556926" />
+-->
+    <!-- 使用springMVC进行系统实现时，springMVC默认的解析器里面是没有加入对文件上传的解析的，这可以方便我们实现自己的文件上传。
+        但如果你想使用springMVC对文件上传的解析器来处理文件上传的时候就需要在spring的applicationContext里面加上springMVC
+        提供的MultipartResolver的申明。这样之后，客户端每次进行请求的时候，springMVC都会检查request里面是否包含多媒体信息，
+        如果包含了就会使用MultipartResolver进行解析,springMVC会使用一个支持文件处理的MultipartHttpServletRequest
+        来包裹当前的HttpServletRequest，然后使用MultipartHttpServletRequest就可以对文件进行处理了 -->
+    <!--<bean id="multipartResolver"-->
+          <!--class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></bean>-->
+
+    <mvc:interceptors>
+        <!--&lt;!&ndash;使用bean定义一个Interceptor，直接定义在mvc:interceptors根下面的Interceptor将拦截所有的请求 &ndash;&gt;-->
+        <!--&lt;!&ndash;定义在此 &ndash;&gt;-->
+        <!--&lt;!&ndash;多个拦截器,顺序执行 &ndash;&gt;-->
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean id="logInterceptor" class="com.tpadsz.update.mvc.interceptor.LogInterceptor">
+                <property name="allowUrls">
+                    <list>
+                        <!-- 如果请求中包含以下路径，则不进行拦截 -->
+                        <value>/login</value>
+                        <value>/js</value>
+                        <value>/resources-1.0.0</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>
